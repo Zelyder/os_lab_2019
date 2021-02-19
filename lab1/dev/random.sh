@@ -1,0 +1,1 @@
+res=''; for j in {1..150}; do string=''; for i in {0..2}; do string+=$(printf "%x" $(($RANDOM%10)) ); done; res+="$string "; done; echo $res
