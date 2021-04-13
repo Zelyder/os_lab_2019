@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
             seed = atoi(optarg);
             if(optarg<=0)
             {
-                printf("array_size  must be positive number\n");
+                printf("seed  must be positive number\n");
                 return 1;
             }
             break;
@@ -49,6 +49,7 @@ int main(int argc, char **argv) {
             array_size = atoi(optarg);
             if(optarg<=0)
             {
+                printf("array_size  must be positive number\n");
                 return 1;
             }
             break;
@@ -56,6 +57,7 @@ int main(int argc, char **argv) {
             pnum = atoi(optarg);
             if(optarg<=0)
             {
+                printf("pnum  must be positive number\n");
                 return 1;
             }
             break;
