@@ -22,8 +22,8 @@
 
 int main(int argc, char *argv[]) {
 
-  if (argc != 3) {
-    printf("You must use 2 arguments: [server port] [buffersize] \n");
+  if (argc != 2) {
+    printf("You must use 1 arguments: [server port] \n");
     exit(1);
   }
 
@@ -41,11 +41,11 @@ int main(int argc, char *argv[]) {
   int lfd, cfd;
   int nread;
   int SERV_PORT = atoi(argv[1]);
-  int BUFSIZE = atoi(argv[2]);
+  int BUFSIZE = 256;
   char buf[BUFSIZE];
   struct sockaddr_in servaddr;
   struct sockaddr_in cliaddr;
-
+// TCP---------------------------------------------------------------- 
   if ((lfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
     perror("socket");
     exit(1);
@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
   }
 
 
-//start udp----------------------------------------------------------
+//UDP ----------------------------------------------------------
     int cntTotal = 0;
   char mesg[BUFSIZE], ipadr[16];;
   int sockfd, n;
@@ -119,25 +119,24 @@ int main(int argc, char *argv[]) {
   while (1) {
     unsigned int len = SLEN;
     int j = 0;
-    for(; j < SLEN; ++j){
-        mesg[j] = '\0';
-    }
+    memset(&mesg, 0, SLEN);
 
     if ((n = recvfrom(sockfd, mesg, BUFSIZE, 0, (SADDR *)&cliaddrUdp, &len)) < 0) {
-      perror("recvfrom");
+      perror("recvfrom failed");
       exit(1);
     }
     cntTotal++;
     sleep(1);
-    printf("\n%s => %d\n", mesg, cntTotal);
+    printf("\n%s -> %d\n", mesg, cntTotal);
 
     if(strcmp(mesg, "stop")==0)
     {
-        printf("SSSSSS");
+        printf("Finish \n");
         break;
     }
+     
   }
-  printf("%d",cntTotal);
+ 
 //end udp-------------------------------------------------------------------
 
 

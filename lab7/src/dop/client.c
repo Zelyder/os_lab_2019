@@ -12,8 +12,8 @@
 #define SLEN sizeof(struct sockaddr_in)
 
 int main(int argc, char *argv[]) {
-  if (argc != 4) {
-    printf("You must use 3 arguments: [server IP address] [port] [buffersize] \n");
+  if (argc != 3) {
+    printf("You must input 2 arguments: [server IP address] [port] \n");
     exit(1);
   }
 
@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 
   int fd;
   int nread;
-  int BUFSIZE = atoi(argv[3]);
+  int BUFSIZE = 256;
   int SERV_PORT = atoi(argv[2]);
   char buf[BUFSIZE];
   struct sockaddr_in servaddr;
@@ -100,6 +100,8 @@ int num = 0;
       perror("sendto problem");
       exit(1);
     }
+    
+
   close(sockfd);
   close(fd);
   exit(0);
