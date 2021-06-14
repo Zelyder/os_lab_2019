@@ -7,6 +7,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "erproc.h"
+
 #define SADDR struct sockaddr
 #define SIZE sizeof(struct sockaddr_in)
 #define SLEN sizeof(struct sockaddr_in)
@@ -32,26 +34,16 @@ int main(int argc, char *argv[]) {
   int SERV_PORT = atoi(argv[2]);
   char buf[BUFSIZE];
   struct sockaddr_in servaddr;
-    // start TCP-------------------------------------------------------
-  if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-    perror("socket creating");
-    exit(1);
-  }
-
+    // TCP-------------------------------------------------------
+  fd = Socket(AF_INET, SOCK_STREAM, 0);
   memset(&servaddr, 0, SIZE);
   servaddr.sin_family = AF_INET;
 
-  if (inet_pton(AF_INET, argv[1], &servaddr.sin_addr) <= 0) {
-    perror("bad address");
-    exit(1);
-  }
+  Inet_pton(AF_INET, argv[1], &servaddr.sin_addr);
 
   servaddr.sin_port = htons(SERV_PORT);
 
-  if (connect(fd, (SADDR *)&servaddr, SIZE) < 0) {
-    perror("connect");
-    exit(1);
-  }
+  Connect(fd, (SADDR *)&servaddr, SIZE);
 
 int num = 0;
 
@@ -59,12 +51,13 @@ int num = 0;
   while ((nread = read(0, buf, BUFSIZE)) > 0) {
     num = atoi(buf);
     if (write(fd, buf, nread) < 0) {
-      perror("write");
+      perror("write failed");
       exit(1);
     }
     break;
   }
 
+  // UDP-------------------------------------------------------
   int sockfd, n;
   char sendline[BUFSIZE], recvline[BUFSIZE + 1];
   struct sockaddr_in servaddrUDP;
@@ -73,14 +66,8 @@ int num = 0;
   servaddrUDP.sin_family = AF_INET;
   servaddrUDP.sin_port = htons(SERV_PORT);
 
-  if (inet_pton(AF_INET, argv[1], &servaddrUDP.sin_addr) < 0) {
-    perror("inet_pton problem");
-    exit(1);
-  }
-  if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-    perror("socket problem");
-    exit(1);
-  }
+  Inet_pton(AF_INET, argv[1], &servaddrUDP.sin_addr);
+  sockfd = Socket(AF_INET, SOCK_DGRAM, 0);
 
   for(i = 1; i <= num; ++i){
       int j = 0;
@@ -100,7 +87,6 @@ int num = 0;
       perror("sendto problem");
       exit(1);
     }
-    
 
   close(sockfd);
   close(fd);
